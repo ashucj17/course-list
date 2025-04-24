@@ -1,0 +1,40 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "Introduction to React",
+      "description": "Learn the fundamentals of React including components, state, and props.",
+      "instructor": "Rajat Sharma",
+      "duration": "8 weeks",
+      "price": 299
+    },
+    {
+      "id": 2,
+      "title": "Advanced JavaScript",
+      "description": "Deep dive into advanced JavaScript concepts like closures, prototypes, and async programming.",
+      "instructor": "Anil Kumar",
+      "duration": "10 weeks",
+      "price": 349
+    },
+    {
+      "id": 3,
+      "title": "Full Stack Development",
+      "description": "Build complete web applications with React, Node.js, and MongoDB.",
+      "instructor": "Sanjana Choudhary",
+      "duration": "12 weeks",
+      "price": 499
+    }
+  ],
+  "enquiries": [
+    {
+      "id": "73b0",
+      "name": "ashish agnihotri",
+      "email": "ashu25@gmail.com",
+      "phone": "08874586321",
+      "message": "Iam interested",
+      "courseId": 1,
+      "courseTitle": "Introduction to React",
+      "createdAt": "2025-04-24T08:48:51.116Z"
+    }
+  ]
+}
