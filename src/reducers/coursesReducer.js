@@ -1,4 +1,4 @@
-import { FETCH_COURSES } from '../actions';
+import { FETCH_COURSES } from '../actions/types';
 
 export default (state = [], action) => {
   switch (action.type) {

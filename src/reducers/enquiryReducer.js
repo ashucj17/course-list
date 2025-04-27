@@ -1,4 +1,4 @@
-import { SUBMIT_ENQUIRY, FETCH_ENQUIRIES } from '../actions';
+import { SUBMIT_ENQUIRY, FETCH_ENQUIRIES } from '../actions/types';
 
 export default (state = [], action) => {
   switch (action.type) {
