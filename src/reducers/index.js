@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import coursesReducer from './coursesReducer';
+import courseReducer from './courseReducer';
 import enquiryReducer from './enquiryReducer';
 
 export default combineReducers({
-  courses: coursesReducer,
+  courses: courseReducer,
   enquiries: enquiryReducer
 });

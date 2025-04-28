@@ -1,38 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCourses, setSelectedCourse, clearSelectedCourse } from '../actions/courseActions';
 import EnquiryForm from './EnquiryForm';
 import './CourseList.css';
 
 function CourseList() {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const dispatch = useDispatch();
+  const { courses, loading, error, selectedCourse } = useSelector(state => state.courses);
 
   useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/courses');
-      if (!response.ok) {
-        throw new Error('Failed to fetch courses');
-      }
-      const data = await response.json();
-      setCourses(data);
-      setLoading(false);
-    } catch (err) {
-      setError('Error fetching courses. Please try again later.');
-      setLoading(false);
-    }
-  };
+    dispatch(fetchCourses());
+  }, [dispatch]);
 
   const handleEnquireClick = (course) => {
-    setSelectedCourse(course);
+    dispatch(setSelectedCourse(course));
   };
 
   const handleFormClose = () => {
-    setSelectedCourse(null);
+    dispatch(clearSelectedCourse());
   };
 
   if (loading) return <div>Loading courses...</div>;

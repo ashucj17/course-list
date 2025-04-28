@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { submitEnquiry } from '../actions/enquiryActions';
 import './EnquiryForm.css';
 
 function EnquiryForm({ course, onClose }) {
+  const dispatch = useDispatch();
+  const { submitting, submitSuccess, error: submitError } = useSelector(state => state.enquiries);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,8 +17,14 @@ function EnquiryForm({ course, onClose }) {
   });
   
   const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  useEffect(() => {
+    if (submitSuccess) {
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    }
+  }, [submitSuccess, onClose]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -48,33 +59,7 @@ function EnquiryForm({ course, onClose }) {
     e.preventDefault();
     
     if (validateForm()) {
-      setSubmitting(true);
-      
-      try {
-        const response = await fetch('http://localhost:3001/enquiries', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            createdAt: new Date().toISOString()
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to submit enquiry');
-        }
-
-        setSubmitSuccess(true);
-        setTimeout(() => {
-          onClose();
-        }, 2000);
-      } catch (error) {
-        setErrors({ submit: 'Failed to submit enquiry. Please try again.' });
-      } finally {
-        setSubmitting(false);
-      }
+      dispatch(submitEnquiry(formData));
     }
   };
 
@@ -143,7 +128,7 @@ function EnquiryForm({ course, onClose }) {
               />
             </div>
             
-            {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
+            {submitError && <div className="error-message submit-error">Failed to submit enquiry. Please try again.</div>}
             
             <button 
               type="submit" 

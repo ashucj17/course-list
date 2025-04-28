@@ -1,29 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchEnquiries } from '../actions/enquiryActions';
+import { setSelectedCourse, clearSelectedCourse } from '../actions/courseActions';
+import EnquiryForm from './EnquiryForm';
 import './EnquiryList.css';
 
 function EnquiryList() {
-  const [enquiries, setEnquiries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { enquiries, loading, error } = useSelector(state => state.enquiries);
+  const { selectedCourse } = useSelector(state => state.courses);
 
   useEffect(() => {
-    fetchEnquiries();
-  }, []);
-
-  const fetchEnquiries = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/enquiries');
-      if (!response.ok) {
-        throw new Error('Failed to fetch enquiries');
-      }
-      const data = await response.json();
-      setEnquiries(data);
-      setLoading(false);
-    } catch (err) {
-      setError('Error fetching enquiries. Please try again later.');
-      setLoading(false);
-    }
-  };
+    dispatch(fetchEnquiries());
+  }, [dispatch]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -36,19 +25,37 @@ function EnquiryList() {
     }).format(date);
   };
 
+  const handleNewEnquiry = () => {
+    // Create a dummy course object for general enquiries
+    dispatch(setSelectedCourse({
+      id: null,
+      title: "General Enquiry"
+    }));
+  };
+
+  const handleFormClose = () => {
+    dispatch(clearSelectedCourse());
+  };
+
   if (loading) return <div>Loading enquiries...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="enquiry-list-container">
-      <h1>Course Enquiries</h1>
+      <div className="enquiry-header">
+        <h1>Course Enquiries</h1>
+        <button className="new-enquiry-button" onClick={handleNewEnquiry}>
+          New Enquiry
+        </button>
+      </div>
+      
       {enquiries.length === 0 ? (
-        <p>No enquiries yet.</p>
+        <p>No enquiries yet. Use the "New Enquiry" button to submit one.</p>
       ) : (
         <div className="enquiry-list">
           {enquiries.map(enquiry => (
             <div key={enquiry.id} className="enquiry-card">
-              <h3>Enquiry for: {enquiry.courseTitle}</h3>
+              <h3>Enquiry for: {enquiry.courseTitle || "General Information"}</h3>
               <div className="enquiry-details">
                 <p><strong>Name:</strong> {enquiry.name}</p>
                 <p><strong>Email:</strong> {enquiry.email}</p>
@@ -63,6 +70,13 @@ function EnquiryList() {
             </div>
           ))}
         </div>
+      )}
+
+      {selectedCourse && (
+        <EnquiryForm 
+          course={selectedCourse} 
+          onClose={handleFormClose} 
+        />
       )}
     </div>
   );
